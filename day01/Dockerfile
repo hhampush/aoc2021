@@ -1,6 +1,6 @@
 FROM gcc:11.2.0 as BASE
 COPY aoc.cpp .
-RUN  g++ -std=c++20 ./aoc.cpp -o /bin/aoc
+RUN  g++ ./aoc.cpp -std=c++20 -Ofast -march=native -flto -Wall -Werror -o /bin/aoc
 
 FROM debian:buster-slim
 COPY --from=BASE /bin/aoc /bin/aoc
