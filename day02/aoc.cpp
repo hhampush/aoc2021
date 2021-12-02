@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
-using namespace std;
-int main(int argc, char* argv[], char *envp[]) {
-    int hor_pos = 0, depth = 0, aim = 0, part1 = (getenv("part") != nullptr && string(getenv("part")).find("part1") != string::npos);
+using namespace std; int main(int argc, char* argv[]) { int hor_pos = 0, depth = 0, aim = 0, part1 = (getenv("part") != nullptr && string(getenv("part")).find("part1") != string::npos);
     for (auto [f,l,i,k] = tuple{ifstream("input.txt"), string(""), 0, string("")}; getline(f,l);) {
         for (auto [ss,sl,p] = tuple{stringstream(l), string(""), string("")}; getline(ss, sl, ' ');) {try{ i = stoi(sl); } catch (exception& e){k = sl;}}
         aim += (k.find("up") != string::npos ? -i : (k.find("down") != string::npos ? i : 0)); hor_pos += (k.find("forward") != string::npos ? i : 0);
