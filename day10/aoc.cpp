@@ -2,7 +2,7 @@
 extern "C" char _binary_input_txt_start;
 extern "C" char _binary_input_txt_end;
 
-unsigned long long checkline(auto line, auto& err_parens, auto& err_square, auto& err_curly, auto& err_pointy, auto part1) {
+unsigned long long checkline(auto line, auto &err_parens, auto &err_square, auto &err_curly, auto &err_pointy, auto part1) {
     std::stack<int> round{};
     std::stack<int> curly{};
     std::stack<int> square{};
@@ -20,22 +20,20 @@ unsigned long long checkline(auto line, auto& err_parens, auto& err_square, auto
                                                                   {")", std::ref(err_parens)},
                                                                   {"]", std::ref(err_square)},
                                                                   {">", std::ref(err_pointy)}};
-                                                                
-    std::stack<int>* toplevel = nullptr;
+    std::stack<int> *toplevel = nullptr;
     int total_size = 0;
-    for (auto& ch : line)
-    {
+    for (auto &ch : line) {
         std::string c(1, ch);
         if (stackmap_start.count(c)) {
-            auto& stack = stackmap_start.at(c).get();
+            auto &stack = stackmap_start.at(c).get();
             if (toplevel == nullptr) {
                 toplevel = &stack;
             }
             stack.push(total_size++);
             order.push(stack);
         } else {
-            auto& stack = stackmap_end.at(c).get();
-            auto& counter = countermap.at(c).get();
+            auto &stack = stackmap_end.at(c).get();
+            auto &counter = countermap.at(c).get();
             if (stack.empty() || stack.top() != total_size - 1) {
                 counter++;
                 return 0;
@@ -55,29 +53,32 @@ unsigned long long checkline(auto line, auto& err_parens, auto& err_square, auto
     if (!round.empty() || !curly.empty() || !square.empty() || pointy.empty()) {
         while (!order.empty()) {
             score *= 5;
-            auto& stack = order.top().get();
+            auto &stack = order.top().get();
             order.pop();
-            if (&stack == &round) score += 1;
-            else if (&stack == &curly) score += 3;
-            else if (&stack == &square) score += 2;
-            else if (&stack == &pointy) score += 4;
+            if (&stack == &round)
+                score += 1;
+            else if (&stack == &curly)
+                score += 3;
+            else if (&stack == &square)
+                score += 2;
+            else if (&stack == &pointy)
+                score += 4;
         }
     }
 
     return score;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     const auto part1 = (getenv("part") != nullptr && std::string(getenv("part")).find("part1") != std::string::npos);
     std::istringstream input(std::string(&_binary_input_txt_start, &_binary_input_txt_end - &_binary_input_txt_start));
-    std::string line;
 
     int err_parens = 0;
     int err_square = 0;
     int err_curly = 0;
     int err_pointy = 0;
     std::vector<unsigned long long> scores{};
+    std::string line;
     while (getline(input, line)) {
         const auto score = checkline(line, err_parens, err_square, err_curly, err_pointy, part1);
         if (score) scores.push_back(score);
@@ -91,7 +92,8 @@ int main(int argc, char **argv)
 
     std::sort(scores.begin(), scores.end());
     if (scores.size() > 0) {
-        const unsigned long long median = (scores.size() % 2 == 0) ? (scores.at(scores.size()/2) + scores.at(scores.size()/2 - 1))/2.0 : scores.at(scores.size()/2);
+        const unsigned long long median =
+            (scores.size() % 2 == 0) ? (scores.at(scores.size() / 2) + scores.at(scores.size() / 2 - 1)) / 2.0 : scores.at(scores.size() / 2);
         std::cout << median << std::endl;
     }
 }
